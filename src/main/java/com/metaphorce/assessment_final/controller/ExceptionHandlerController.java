@@ -1,6 +1,8 @@
 package com.metaphorce.assessment_final.controller;
 
+import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
 import com.metaphorce.assessment_final.exceptions.ExceptionResponse;
+import com.metaphorce.assessment_final.exceptions.ResourceNotFound;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -47,6 +49,30 @@ public class ExceptionHandlerController {
                 e.getMessage(),
                 ZonedDateTime.now(ZoneId.systemDefault()),
                 HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(ResourceNotFound.class)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public ExceptionResponse handleResourceNotFound(ResourceNotFound e) {
+
+        return new ExceptionResponse(
+                e.getMessage(),
+                ZonedDateTime.now(ZoneId.systemDefault()),
+                HttpStatus.NO_CONTENT
+        );
+    }
+
+    @ExceptionHandler(EntityNotActiveException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ExceptionResponse handleEntityNotActiveException(EntityNotActiveException e) {
+
+        return new ExceptionResponse(
+                e.getMessage(),
+                ZonedDateTime.now(ZoneId.systemDefault()),
+                HttpStatus.CONFLICT
         );
     }
 }
