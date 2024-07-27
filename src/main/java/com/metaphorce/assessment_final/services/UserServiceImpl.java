@@ -1,6 +1,6 @@
 package com.metaphorce.assessment_final.services;
 
-import com.metaphorce.assessment_final.dto.ChangeStatusRequest;
+import com.metaphorce.assessment_final.dto.StatusUserRequest;
 import com.metaphorce.assessment_final.dto.UpdateInfoRequest;
 import com.metaphorce.assessment_final.dto.UserResponse;
 import com.metaphorce.assessment_final.entities.User;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse changeStatus(ChangeStatusRequest request) {
+    public UserResponse changeStatus(StatusUserRequest request) {
 
         User user = userRepository.findById(request.id()).orElseThrow(() -> new EntityNotFoundException("User not found whit id: " + request.id()));
 

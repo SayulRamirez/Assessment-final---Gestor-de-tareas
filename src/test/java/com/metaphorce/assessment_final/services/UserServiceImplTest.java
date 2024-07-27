@@ -1,6 +1,6 @@
 package com.metaphorce.assessment_final.services;
 
-import com.metaphorce.assessment_final.dto.ChangeStatusRequest;
+import com.metaphorce.assessment_final.dto.StatusUserRequest;
 import com.metaphorce.assessment_final.dto.UpdateInfoRequest;
 import com.metaphorce.assessment_final.dto.UserResponse;
 import com.metaphorce.assessment_final.repositories.UserRepository;
@@ -109,7 +109,7 @@ public class UserServiceImplTest {
     @Test
     void whenChangeStatusUserNotFound() {
 
-        ChangeStatusRequest request = new ChangeStatusRequest(1L, UserStatus.BLOCKED);
+        StatusUserRequest request = new StatusUserRequest(1L, UserStatus.BLOCKED);
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -129,7 +129,7 @@ public class UserServiceImplTest {
                 .email("juan@example.com")
                 .build();
 
-        ChangeStatusRequest request = new ChangeStatusRequest(1L, UserStatus.BLOCKED);
+        StatusUserRequest request = new StatusUserRequest(1L, UserStatus.BLOCKED);
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
