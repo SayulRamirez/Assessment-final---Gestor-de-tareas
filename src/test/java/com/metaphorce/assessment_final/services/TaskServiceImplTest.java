@@ -231,4 +231,13 @@ public class TaskServiceImplTest {
         assertEquals(request.status(), result.status());
 
     }
+
+    //delete()
+    @Test
+    void whenDeleteTask() {
+
+        underTest.delete(1L);
+
+        verify(taskRepository, times(1)).deleteById(anyLong());
+    }
 }
