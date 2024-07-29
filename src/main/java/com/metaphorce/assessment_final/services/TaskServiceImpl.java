@@ -115,4 +115,7 @@ public class TaskServiceImpl implements TaskService {
                 task.getEstimatedDelivery(),
                 task.getPriority());
     }
+
+    @Override
+    public void delete(Long id) {taskRepository.deleteById(id);}
 }

@@ -15,4 +15,6 @@ public interface TaskService {
     List<TaskResponse> getTasks(Long id);
 
     TaskResponse changeStatus(ChangeStatusRequest request);
+
+    void delete(Long id);
 }
