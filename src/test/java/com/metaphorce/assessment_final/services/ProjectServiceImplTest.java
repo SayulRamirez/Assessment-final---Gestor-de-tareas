@@ -10,6 +10,7 @@ import com.metaphorce.assessment_final.enums.UserStatus;
 import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
 import com.metaphorce.assessment_final.exceptions.ResourceNotFound;
 import com.metaphorce.assessment_final.repositories.ProjectRepository;
+import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ public class ProjectServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private TaskRepository taskRepository;
 
     @InjectMocks
     private ProjectServiceImpl underTest;
@@ -192,5 +196,15 @@ public class ProjectServiceImplTest {
         assertEquals(request.id(), result.id());
         assertEquals(request.status(), result.status());
         verify(projectRepository, timeout(1)).save(any(Project.class));
+    }
+
+    //delete()
+    @Test
+    void whenDeleteProject() {
+
+        underTest.delete(1L);
+
+        verify(taskRepository, times(1)).deleteAllByProjectId(anyLong());
+        verify(projectRepository, times(1)).deleteById(anyLong());
     }
 }
