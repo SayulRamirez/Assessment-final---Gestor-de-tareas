@@ -15,4 +15,6 @@ public interface ProjectService {
     List<ProjectResponse> getProjects(Long id);
 
     ProjectResponse changeStatus(ChangeStatusRequest request);
+
+    void delete(Long id);
 }

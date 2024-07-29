@@ -10,6 +10,7 @@ import com.metaphorce.assessment_final.enums.UserStatus;
 import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
 import com.metaphorce.assessment_final.exceptions.ResourceNotFound;
 import com.metaphorce.assessment_final.repositories.ProjectRepository;
+import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
 
     private final ProjectRepository projectRepository;
+
+    private final TaskRepository taskRepository;
 
     @Override
     public ProjectResponse createProject(ProjectRequest request) {
@@ -73,5 +76,13 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(project);
 
         return new ProjectResponse(project.getId(), project.getTitle(), project.getTitle(), project.getStatus(), project.getEstimatedCompletion());
+    }
+
+    @Override
+    public void delete(Long id) {
+
+        taskRepository.deleteAllByProjectId(id);
+
+        projectRepository.deleteById(id);
     }
 }
