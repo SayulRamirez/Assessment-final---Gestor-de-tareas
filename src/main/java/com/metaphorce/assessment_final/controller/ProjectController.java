@@ -60,4 +60,14 @@ public class ProjectController {
 
         return ResponseEntity.ok(projectService.changeStatus(request));
     }
+
+    @Operation(summary = "delete project by id")
+    @DeleteMapping(value = "{id}")
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @Transactional
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        projectService.delete(id);
+
+        return ResponseEntity.notFound().build();
+    }
 }
