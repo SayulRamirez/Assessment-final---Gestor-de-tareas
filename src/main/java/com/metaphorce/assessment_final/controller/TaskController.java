@@ -25,7 +25,7 @@ public class TaskController {
 
     @Operation(summary = "create a new task")
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     public ResponseEntity<TaskResponse> create(TaskRequest request) {
 
@@ -58,5 +58,16 @@ public class TaskController {
     @Transactional
     public ResponseEntity<TaskResponse> changeStatus(@RequestBody @Valid ChangeStatusRequest request) {
         return ResponseEntity.ok(taskService.changeStatus(request));
+    }
+
+    @Operation(summary = "Delete task by id")
+    @DeleteMapping(value = "{id}")
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @Transactional
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+        taskService.delete(id);
+
+        return ResponseEntity.notFound().build();
     }
 }
