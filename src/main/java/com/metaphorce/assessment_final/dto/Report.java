@@ -16,16 +16,16 @@ public record Report(
         @Schema(example = "4332121544")
         String phone_number,
 
-        @Schema(example = "3")
-        long assigned,
+        @Schema(example = "10")
+        int assigned,
 
         @Schema(example = "3")
-        long pending,
+        int pending,
 
-        @Schema(example = "3")
-        long in_progress,
+        @Schema(example = "2")
+        int in_progress,
 
-        @Schema(example = "3")
-        long complete
+        @Schema(example = "5")
+        int complete
 ) {
 }

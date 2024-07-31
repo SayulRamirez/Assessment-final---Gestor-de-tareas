@@ -6,5 +6,5 @@ public interface TaskStatusCount {
 
     Status getStatus();
 
-    long getCount();
+    int getCount();
 }
