@@ -1,8 +1,6 @@
 package com.metaphorce.assessment_final.services;
 
-import com.metaphorce.assessment_final.dto.ChangeStatusRequest;
-import com.metaphorce.assessment_final.dto.ProjectRequest;
-import com.metaphorce.assessment_final.dto.ProjectResponse;
+import com.metaphorce.assessment_final.dto.*;
 import com.metaphorce.assessment_final.entities.Project;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Status;
@@ -16,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -84,5 +83,53 @@ public class ProjectServiceImpl implements ProjectService {
         taskRepository.deleteAllByProjectId(id);
 
         projectRepository.deleteById(id);
+    }
+
+    @Override
+    public ReportResponse getReport(Long id) {
+
+        Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Project not found whit id: " + id));
+
+        List<User> responsible = taskRepository.findResponsibleByProjectId(project.getId());
+
+        List<Report> reports = new ArrayList<>();
+
+        if (!responsible.isEmpty()) {
+
+            responsible.forEach(user -> {
+
+                List<TaskStatusCount> taskStatusCounts = taskRepository.countTaskByStatus(user.getId());
+
+                int pending = 0;
+                int completed = 0;
+                int inProgress = 0;
+                int total = 0;
+
+                if (!taskStatusCounts.isEmpty()) {
+
+                    for (TaskStatusCount count : taskStatusCounts) {
+
+                        switch (count.getStatus()) {
+                            case PENDING -> pending = count.getCount();
+                            case IN_PROGRESS -> inProgress = count.getCount();
+                            case COMPLETE -> completed = count.getCount();
+                        }
+
+                        total += count.getCount();
+                    }
+                }
+
+                reports.add(new Report(user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getPhoneNumber(), total, pending, inProgress, completed));
+            });
+        }
+
+        return new ReportResponse(new ProjectResponse(project.getId(),
+                project.getTitle(),
+                project.getDescription(),
+                project.getStatus(),
+                project.getEstimatedCompletion()), reports);
     }
 }
