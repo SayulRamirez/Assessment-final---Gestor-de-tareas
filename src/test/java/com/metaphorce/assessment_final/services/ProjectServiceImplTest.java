@@ -1,8 +1,6 @@
 package com.metaphorce.assessment_final.services;
 
-import com.metaphorce.assessment_final.dto.ChangeStatusRequest;
-import com.metaphorce.assessment_final.dto.ProjectRequest;
-import com.metaphorce.assessment_final.dto.ProjectResponse;
+import com.metaphorce.assessment_final.dto.*;
 import com.metaphorce.assessment_final.entities.Project;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Status;
@@ -206,5 +204,128 @@ public class ProjectServiceImplTest {
 
         verify(taskRepository, times(1)).deleteAllByProjectId(anyLong());
         verify(projectRepository, times(1)).deleteById(anyLong());
+    }
+
+    //getReport()
+    @Test
+    void whenGetReportProjectNotFound() {
+
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFound.class, () -> underTest.getReport(1L));
+    }
+
+    @Test
+    void whenGetReportNoResponsible() {
+        Project project = Project.builder()
+                .id(1L)
+                .title("second title")
+                .description("second description")
+                .status(Status.PENDING)
+                .estimatedCompletion(LocalDate.now().plusDays(6)).build();
+
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+
+        when(taskRepository.findResponsibleByProjectId(anyLong())).thenReturn(new ArrayList<>());
+
+        ReportResponse result = underTest.getReport(1L);
+
+        assertEquals(project.getTitle(), result.project().title());
+        assertEquals(project.getStatus(), result.project().status());
+        assertTrue(result.report().isEmpty());
+    }
+
+    @Test
+    void whenGetProjectNoTasksAssigned() {
+        Project project = Project.builder()
+                .id(1L)
+                .title("second title")
+                .description("second description")
+                .status(Status.PENDING)
+                .estimatedCompletion(LocalDate.now().plusDays(6)).build();
+
+        User user = User.builder().id(1L)
+                .firstName("juan")
+                .lastName("martinez")
+                .email("juan@example.com")
+                .phoneNumber("1232121432").build();
+
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+
+        when(taskRepository.findResponsibleByProjectId(anyLong())).thenReturn(List.of(user));
+
+        when(taskRepository.countTaskByStatus(user.getId())).thenReturn(new ArrayList<>());
+
+        ReportResponse result = underTest.getReport(1L);
+
+        assertEquals(project.getTitle(), result.project().title());
+        assertEquals(project.getStatus(), result.project().status());
+        assertFalse(result.report().isEmpty());
+
+        result.report().forEach(report -> {
+            assertEquals(0, report.assigned());
+            assertEquals(0, report.pending());
+            assertEquals(0, report.in_progress());
+            assertEquals(0, report.complete());
+        });
+    }
+
+    @Test
+    void whenGetProjectTasksAssigned() {
+        Project project = Project.builder()
+                .id(1L)
+                .title("second title")
+                .description("second description")
+                .status(Status.PENDING)
+                .estimatedCompletion(LocalDate.now().plusDays(6)).build();
+
+        User user = User.builder().id(1L)
+                .firstName("juan")
+                .lastName("martinez")
+                .email("juan@example.com")
+                .phoneNumber("1232121432").build();
+
+        TaskStatusCount count = new TaskStatusCount() {
+            @Override
+            public Status getStatus() {
+                return Status.PENDING;
+            }
+
+            @Override
+            public int getCount() {
+                return 2;
+            }
+        };
+
+        TaskStatusCount count2 = new TaskStatusCount() {
+            @Override
+            public Status getStatus() {
+                return Status.COMPLETE;
+            }
+
+            @Override
+            public int getCount() {
+                return 4;
+            }
+        };
+
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+
+        when(taskRepository.findResponsibleByProjectId(anyLong())).thenReturn(List.of(user));
+
+        when(taskRepository.countTaskByStatus(user.getId())).thenReturn(List.of(count, count2));
+
+        ReportResponse result = underTest.getReport(1L);
+
+        assertEquals(project.getTitle(), result.project().title());
+        assertEquals(project.getStatus(), result.project().status());
+        assertFalse(result.report().isEmpty());
+
+        result.report().forEach(report -> {
+            assertEquals(6, report.assigned());
+            assertEquals(2, report.pending());
+            assertEquals(0, report.in_progress());
+            assertEquals(4, report.complete());
+        });
     }
 }
