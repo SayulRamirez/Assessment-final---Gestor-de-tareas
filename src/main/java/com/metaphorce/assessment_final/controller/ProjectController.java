@@ -3,12 +3,14 @@ package com.metaphorce.assessment_final.controller;
 import com.metaphorce.assessment_final.dto.ChangeStatusRequest;
 import com.metaphorce.assessment_final.dto.ProjectRequest;
 import com.metaphorce.assessment_final.dto.ProjectResponse;
+import com.metaphorce.assessment_final.dto.ReportResponse;
 import com.metaphorce.assessment_final.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -69,5 +71,13 @@ public class ProjectController {
         projectService.delete(id);
 
         return ResponseEntity.notFound().build();
+    }
+
+    @Operation(summary = "Get report project progress")
+    @GetMapping(value = "report/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ReportResponse> getReport(@PathVariable Long id) {
+
+        return ResponseEntity.ok(projectService.getReport(id));
     }
 }
