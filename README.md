@@ -26,7 +26,7 @@ otras que se especificarán más adelante.
 
 ### Usuarios
 
-###### Obetener información de un usuario en específico, se deberá enviar ruta el id del usuario que se requiera solicitar su información.
+###### Obetener información de un usuario en específico, se deberá enviar en la ruta el id del usuario que se requiera solicitar su información.
 
 Ruta: **http://localhost:8080/api/v1/user/id**
 Método http: GET.
@@ -37,7 +37,7 @@ Método http: GET.
 
 *Respuestas*
 
-200 si fue exsitosa la solicitud:
+200 si fue exitosa la solicitud:
 ````
 {
   "id": 21,
@@ -143,7 +143,7 @@ Se deberá enviar en el body de la petición lo siguiente:
 Ruta: **http://localhost:8080/api/v1/projects**
 Método http: POST
 
-Se deberá enviar en el body de la petición la siguiente información:
+Se deberá enviar en el body de la petición como se muestra en el siguiente ejemplo:
 ````
 {
   "title": "Any title",
@@ -155,7 +155,7 @@ Se deberá enviar en el body de la petición la siguiente información:
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -198,7 +198,7 @@ Método http: GET
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -210,7 +210,7 @@ Método http: GET
 }
 ````
 
-204 si no se encontraron proyectos,
+404 si no se encontraron proyectos,
 
 ````
 {
@@ -230,7 +230,7 @@ Método http: GET
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -242,7 +242,7 @@ Método http: GET
 }
 ````
 
-204 si no se encontraron proyectos,
+404 si no se encontraron proyectos,
 
 ````
 {
@@ -258,7 +258,7 @@ Método http: GET
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -291,7 +291,55 @@ Método http: DELETE
 
 *Respuestas*
 
-404
+404 sin contenido.
+
+###### Obtener un reporte del progreso del proyecto (status de las tareas)
+Ruta: http://localhost:8080/api/v1/projects/report/id
+Método http: GET
+
+> [!NOTE]
+> No olvides remplazar el "id" de la ruta por el id de usuario
+> a inspeccionar: http://localhost:8080/api/v1/projects/report/1
+
+*Respuestas*
+
+200 si fue exitosa la solicitud:
+
+> [!NOTE]
+> La lista del reporte puede estar vacía si no se han asignado tareas.
+````
+{
+  "project": {
+    "id": 12,
+    "title": "any title",
+    "description": "any description",
+    "status": "COMPLETE",
+    "estimated_completion": "2025-12-03"
+  },
+  "report": [
+    {
+      "first_name": "Juan",
+      "last_name": "Ramirez",
+      "email": "juan@example.com",
+      "phone_number": "4332121544",
+      "assigned": 10,
+      "pending": 3,
+      "in_progress": 2,
+      "complete": 5
+    }
+  ]
+}
+````
+
+404 si no se encontro el proyecto solicitado para el reporte.
+
+````
+{
+  "message": "User not found",
+  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
+  "status": "NO_CONTENT"
+}
+````
 
 ### Tareas
 
@@ -314,7 +362,7 @@ Se deberá enviar en el body de la petición la siguiente información:
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -356,7 +404,7 @@ Método http: GET
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -377,7 +425,7 @@ Método http: GET
 Además te devolvera la ruta para consultar el recurso creado en el header: http://localhost:8080/api/v1/projects/1 
 ````
 
-204 si no se encontró la tarea,
+404 si no se encontró la tarea,
 
 ````
 {
@@ -396,7 +444,7 @@ Método http: GET
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -416,7 +464,7 @@ Método http: GET
 }
 ````
 
-204 si no se encontraron proyectos,
+404 si no se encontraron proyectos,
 
 ````
 {
@@ -432,7 +480,7 @@ Método http: PUT
 
 *Respuestas*
 
-200 si fue existosa la solicitud:
+200 si fue exitosa la solicitud:
 
 ````
 {
@@ -473,4 +521,4 @@ Método http: DELETE
 
 *Respuestas*
 
-404
+404 sin contenido.
