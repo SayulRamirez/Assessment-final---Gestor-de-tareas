@@ -8,7 +8,6 @@ import com.metaphorce.assessment_final.entities.Project;
 import com.metaphorce.assessment_final.entities.Task;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Status;
-import com.metaphorce.assessment_final.exceptions.ResourceNotFound;
 import com.metaphorce.assessment_final.repositories.ProjectRepository;
 import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
@@ -59,7 +58,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponse getTask(Long id) {
 
-        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Not found task whit id " + id));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Not found task whit id " + id));
 
         return new TaskResponse(task.getId(),
                 task.getTitle(),
@@ -79,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<Task> tasks = taskRepository.findAllByResponsibleId(id);
 
-        if (tasks.isEmpty()) throw new ResourceNotFound("No projects were found with the id leader: " + id);
+        if (tasks.isEmpty()) throw new EntityNotFoundException("No projects were found with the id leader: " + id);
 
         return tasks.stream().map(task -> new TaskResponse(task.getId(),
                 task.getTitle(),

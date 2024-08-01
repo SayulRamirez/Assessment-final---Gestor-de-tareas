@@ -6,7 +6,6 @@ import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Status;
 import com.metaphorce.assessment_final.enums.UserStatus;
 import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
-import com.metaphorce.assessment_final.exceptions.ResourceNotFound;
 import com.metaphorce.assessment_final.repositories.ProjectRepository;
 import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
@@ -48,7 +47,7 @@ public class ProjectServiceImplTest {
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.createProject(request));
+        assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> underTest.createProject(request));
     }
 
     @Test
@@ -105,7 +104,7 @@ public class ProjectServiceImplTest {
     void whenGetProjectIsEmpty() {
         when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFound.class, () -> underTest.getProject(1L));
+        assertThrows(EntityNotFoundException.class, () -> underTest.getProject(1L));
     }
 
     @Test
@@ -131,7 +130,7 @@ public class ProjectServiceImplTest {
 
         when(projectRepository.findAllByLeaderId(anyLong())).thenReturn(new ArrayList<>());
 
-        assertThrows(ResourceNotFound.class, () -> underTest.getProjects(1L));
+        assertThrows(EntityNotFoundException.class, () -> underTest.getProjects(1L));
     }
 
     @Test
@@ -168,7 +167,7 @@ public class ProjectServiceImplTest {
 
         when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.changeStatus(request));
+        assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> underTest.changeStatus(request));
     }
 
     @Test
@@ -212,7 +211,7 @@ public class ProjectServiceImplTest {
 
         when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFound.class, () -> underTest.getReport(1L));
+        assertThrows(EntityNotFoundException.class, () -> underTest.getReport(1L));
     }
 
     @Test

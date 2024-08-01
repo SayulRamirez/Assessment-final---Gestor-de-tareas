@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(request.last_name());
         user.setPhoneNumber(request.phone_number());
 
-        if (request.maternal_surname().isBlank()) user.setMaternalSurname(request.maternal_surname());
+        if (!request.maternal_surname().isBlank()) user.setMaternalSurname(request.maternal_surname());
 
         userRepository.save(user);
 

@@ -6,7 +6,6 @@ import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Status;
 import com.metaphorce.assessment_final.enums.UserStatus;
 import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
-import com.metaphorce.assessment_final.exceptions.ResourceNotFound;
 import com.metaphorce.assessment_final.repositories.ProjectRepository;
 import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
@@ -47,7 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectResponse getProject(Long id) {
 
-        Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Project not found whit id: " + id));
+        Project project = projectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Project not found whit id: " + id));
 
         return new ProjectResponse(project.getId(), project.getTitle(), project.getTitle(), project.getStatus(), project.getEstimatedCompletion());
     }
@@ -57,7 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         List<Project> projects = projectRepository.findAllByLeaderId(id);
 
-        if (projects.isEmpty()) throw new ResourceNotFound("No projects were found with the id leader: " + id);
+        if (projects.isEmpty()) throw new EntityNotFoundException("No projects were found with the id leader: " + id);
 
         return projects.stream().map(project -> new ProjectResponse(
                 project.getId(),
@@ -88,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ReportResponse getReport(Long id) {
 
-        Project project = projectRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Project not found whit id: " + id));
+        Project project = projectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Project not found whit id: " + id));
 
         List<User> responsible = taskRepository.findResponsibleByProjectId(project.getId());
 

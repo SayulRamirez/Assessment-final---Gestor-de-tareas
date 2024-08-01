@@ -8,7 +8,6 @@ import com.metaphorce.assessment_final.entities.Task;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Priority;
 import com.metaphorce.assessment_final.enums.Status;
-import com.metaphorce.assessment_final.exceptions.ResourceNotFound;
 import com.metaphorce.assessment_final.repositories.ProjectRepository;
 import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
@@ -50,7 +49,7 @@ public class TaskServiceImplTest {
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.createTask(request));
+        assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> underTest.createTask(request));
     }
 
     @Test
@@ -64,7 +63,7 @@ public class TaskServiceImplTest {
 
         when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.createTask(request));
+        assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> underTest.createTask(request));
     }
 
     @Test
@@ -114,7 +113,7 @@ public class TaskServiceImplTest {
 
         when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFound.class, () -> underTest.getTask(1L));
+        assertThrows(EntityNotFoundException.class, () -> underTest.getTask(1L));
     }
 
     @Test
@@ -150,7 +149,7 @@ public class TaskServiceImplTest {
     void whenGetTasksIsEmpty() {
         when(taskRepository.findAllByResponsibleId(anyLong())).thenReturn(new ArrayList<>());
 
-        assertThrows(ResourceNotFound.class, () -> underTest.getTasks(1L));
+        assertThrows(EntityNotFoundException.class, () -> underTest.getTasks(1L));
     }
 
     @Test
@@ -196,7 +195,7 @@ public class TaskServiceImplTest {
 
         when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.changeStatus(request));
+        assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> underTest.changeStatus(request));
     }
 
     @Test
