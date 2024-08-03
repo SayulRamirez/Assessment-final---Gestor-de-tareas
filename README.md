@@ -10,6 +10,8 @@ otras que se especificarán más adelante.
 - Java 17.0.11
 - Maven 3.9.6
 - Spring boot 3.3.2
+- Spring Security
+- Json web token JWT 0.11.5
 - Spring Data JPA (para la persistencia de datos)
 - Spring Validation (para la validación de los datos)
 - MySQL
@@ -21,8 +23,85 @@ otras que se especificarán más adelante.
 
 ---
 
-## Funcionalidades
+## Seguridad y autenticación.
+El acceso a los endpoints de la apliación estan protegidos mediante autenticación con JWT. Para poder hacer uso de los servicios 
+proporcionados de la aplicación, será necesario hacer su registro del usuario y posteriormente realizar el login de la apliación.
 
+> [!IMPORTANT]
+> Al realizar el login de la aplicación se devolverá un token el cual deberá enviarse en cada petición
+> del servicio para poder acceder a ellos, exceptuando claro el registro y el login de la aplicación.
+
+###### Registro de nuevos usuarios.
+
+Ruta: **http://localhost:8080/auth/register**
+Método http: POST.
+
+Se deberá de enviar en el body de la petición la información siguiente información como se muestra en el ejemplo.
+
+````
+{
+  "first_name": "juan",
+  "last_name": "perez",
+  "maternal_surname": "meza",
+  "phone_number": "4772352465",
+  "email": "example@example.com",
+  "password": "secret password"
+}
+````
+*Respuestas*
+
+200 si fue exitosa la solicitud:
+````
+{
+"token": "token secret"
+}
+````
+
+409 si el teléfono o email ya estan registrados:
+````
+{
+  "message": "Already exists user whit email: example@example.com",
+  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
+  "status": "CONFLICT"
+}
+````
+
+###### Login de la aplicación.
+
+Ruta: **http://localhost:8080/auth/login**
+Método http: POST.
+
+Se deberá de enviar en el body de la petición la información siguiente información como se muestra en el ejemplo.
+
+````
+{
+  "email": "example@example.com",
+  "password": "secretpassword"
+}
+````
+*Respuestas*
+
+200 si fue exitosa la solicitud:
+````
+{
+"token": "token secret"
+}
+````
+
+> [!IMPORTANT]
+> Este token es el que se deberá enviar en las peticiones a los servicios.
+
+404 Si no se encontro una cuenta con esas credenciales:
+````
+{
+  "message": "User not found",
+  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
+  "status": "NOT_FOUND"
+}
+````
+
+
+## Funcionalidades
 
 ### Usuarios
 
