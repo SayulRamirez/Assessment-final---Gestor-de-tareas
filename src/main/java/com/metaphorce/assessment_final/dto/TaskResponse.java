@@ -20,12 +20,16 @@ public record TaskResponse (
         @Schema(example = "COMPLETE")
         Status status,
 
-        ProjectResponse project,
-
         @Schema(example = "2024-01-11")
         LocalDate estimate_delivery,
 
         @Schema(example = "HIGH")
-        Priority priority
+        Priority priority,
+
+        @Schema(example = "2024-01-02")
+        LocalDate create_date,
+
+        @Schema(example = "3")
+        int runtime
 ){
 }
