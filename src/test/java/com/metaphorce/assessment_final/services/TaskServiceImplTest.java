@@ -217,7 +217,9 @@ public class TaskServiceImplTest {
                 .responsible(User.builder().id(1L).build())
                 .estimatedDelivery(LocalDate.now())
                 .priority(Priority.MEDIUM)
-                .project(project).build();
+                .project(project)
+                .createDate(LocalDate.now().minusDays(3))
+                .runtime(0).build();
 
         when(taskRepository.findById(request.id())).thenReturn(Optional.of(task));
 
@@ -228,6 +230,7 @@ public class TaskServiceImplTest {
 
         verify(taskRepository, times(1)).save(any(Task.class));
         assertEquals(request.status(), result.status());
+        assertEquals(3, result.runtime());
 
     }
 
