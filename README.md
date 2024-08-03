@@ -445,19 +445,14 @@ Se deberá enviar en el body de la petición la siguiente información:
 
 ````
 {
-  "id": 1,
+  "id": 12,
   "title": "any title",
   "description": "any description",
-  "status": "PENDING",
-  "project": {
-    "id": 1,
-    "title": "Any title",
-    "description": "Any description",
-    "status": "PENDING",
-    "estimated_completion": "2007-12-03"
-  },
+  "status": "COMPLETE",
   "estimate_delivery": "2024-01-11",
-  "priority": "MEDIUM"
+  "priority": "HIGH",
+  "create_date": "2024-01-02",
+  "runtime": 0
 }
 Además te devolvera la ruta para consultar el recurso creado en el header: http://localhost:8080/api/v1/projects/1 
 ````
@@ -487,19 +482,14 @@ Método http: GET
 
 ````
 {
-  "id": 1,
+  "id": 12,
   "title": "any title",
   "description": "any description",
-  "status": "PENDING",
-  "project": {
-    "id": 1,
-    "title": "Any title",
-    "description": "Any description",
-    "status": "PENDING",
-    "estimated_completion": "2007-12-03"
-  },
+  "status": "COMPLETE",
   "estimate_delivery": "2024-01-11",
-  "priority": "MEDIUM"
+  "priority": "HIGH",
+  "create_date": "2024-01-02",
+  "runtime": 3
 }
 Además te devolvera la ruta para consultar el recurso creado en el header: http://localhost:8080/api/v1/projects/1 
 ````
@@ -527,19 +517,14 @@ Método http: GET
 
 ````
 {
-  "id": 1,
+  "id": 12,
   "title": "any title",
   "description": "any description",
-  "status": "PENDING",
-  "project": {
-    "id": 1,
-    "title": "Any title",
-    "description": "Any description",
-    "status": "PENDING",
-    "estimated_completion": "2007-12-03"
-  },
+  "status": "COMPLETE",
   "estimate_delivery": "2024-01-11",
-  "priority": "MEDIUM"
+  "priority": "HIGH",
+  "create_date": "2024-01-02",
+  "runtime": 3
 }
 ````
 
@@ -563,19 +548,14 @@ Método http: PUT
 
 ````
 {
-  "id": 1,
+  "id": 12,
   "title": "any title",
   "description": "any description",
-  "status": "PENDING",
-  "project": {
-    "id": 1,
-    "title": "Any title",
-    "description": "Any description",
-    "status": "PENDING",
-    "estimated_completion": "2007-12-03"
-  },
+  "status": "COMPLETE",
   "estimate_delivery": "2024-01-11",
-  "priority": "MEDIUM"
+  "priority": "HIGH",
+  "create_date": "2024-01-02",
+  "runtime": 3
 }
 ````
 
