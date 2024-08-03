@@ -1,7 +1,6 @@
 package com.metaphorce.assessment_final.services;
 
 import com.metaphorce.assessment_final.dto.ChangeStatusRequest;
-import com.metaphorce.assessment_final.dto.ProjectResponse;
 import com.metaphorce.assessment_final.dto.TaskRequest;
 import com.metaphorce.assessment_final.dto.TaskResponse;
 import com.metaphorce.assessment_final.entities.Project;
@@ -15,6 +14,11 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.chrono.Chronology;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -40,19 +44,18 @@ public class TaskServiceImpl implements TaskService {
                 .status(Status.PENDING)
                 .project(project)
                 .estimatedDelivery(request.estimate_delivery())
-                .priority(request.priority()).build());
+                .priority(request.priority())
+                .createDate(LocalDate.now())
+                .runtime(0).build());
 
         return new TaskResponse(task.getId(),
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                new ProjectResponse(task.getProject().getId(),
-                        task.getProject().getTitle(),
-                        task.getProject().getDescription(),
-                        task.getProject().getStatus(),
-                        task.getProject().getEstimatedCompletion()),
                 task.getEstimatedDelivery(),
-                task.getPriority());
+                task.getPriority(),
+                task.getCreateDate(),
+                task.getRuntime());
     }
 
     @Override
@@ -64,13 +67,10 @@ public class TaskServiceImpl implements TaskService {
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                new ProjectResponse(task.getProject().getId(),
-                        task.getProject().getTitle(),
-                        task.getProject().getDescription(),
-                        task.getProject().getStatus(),
-                        task.getProject().getEstimatedCompletion()),
                 task.getEstimatedDelivery(),
-                task.getPriority());
+                task.getPriority(),
+                task.getCreateDate(),
+                task.getRuntime());
     }
 
     @Override
@@ -84,13 +84,10 @@ public class TaskServiceImpl implements TaskService {
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                new ProjectResponse(task.getProject().getId(),
-                        task.getProject().getTitle(),
-                        task.getProject().getDescription(),
-                        task.getProject().getStatus(),
-                        task.getProject().getEstimatedCompletion()),
                 task.getEstimatedDelivery(),
-                task.getPriority())).toList();
+                task.getPriority(),
+                task.getCreateDate(),
+                task.getRuntime())).toList();
     }
 
     @Override
@@ -100,19 +97,21 @@ public class TaskServiceImpl implements TaskService {
 
         find.setStatus(request.status());
 
+        if (request.status() == Status.COMPLETE) {
+
+            find.setRuntime((int) ChronoUnit.DAYS.between(find.getCreateDate(), LocalDate.now()));
+        }
+
         Task task = taskRepository.save(find);
 
         return new TaskResponse(task.getId(),
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                new ProjectResponse(task.getProject().getId(),
-                        task.getProject().getTitle(),
-                        task.getProject().getDescription(),
-                        task.getProject().getStatus(),
-                        task.getProject().getEstimatedCompletion()),
                 task.getEstimatedDelivery(),
-                task.getPriority());
+                task.getPriority(),
+                task.getCreateDate(),
+                task.getRuntime());
     }
 
     @Override
