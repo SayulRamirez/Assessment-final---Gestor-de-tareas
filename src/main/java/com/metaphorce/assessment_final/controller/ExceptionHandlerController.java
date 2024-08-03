@@ -2,6 +2,7 @@ package com.metaphorce.assessment_final.controller;
 
 import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
 import com.metaphorce.assessment_final.exceptions.ExceptionResponse;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -62,4 +63,17 @@ public class ExceptionHandlerController {
                 HttpStatus.CONFLICT
         );
     }
+
+    @ExceptionHandler(EntityExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ExceptionResponse handleEntityExistsException(EntityExistsException e) {
+
+        return new ExceptionResponse(
+                e.getMessage(),
+                ZonedDateTime.now(ZoneId.systemDefault()),
+                HttpStatus.CONFLICT
+        );
+    }
+
 }
