@@ -5,6 +5,7 @@ import com.metaphorce.assessment_final.dto.UpdateInfoRequest;
 import com.metaphorce.assessment_final.dto.UserResponse;
 import com.metaphorce.assessment_final.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Get information user")
+    @Operation(summary = "Get information user", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserResponse> getInfo(@PathVariable Long id) {
@@ -27,7 +28,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getInfo(id));
     }
 
-    @Operation(summary = "Change info user")
+    @Operation(summary = "Change info user", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -36,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateInfo(request));
     }
 
-    @Operation(summary = "Change status user")
+    @Operation(summary = "Change status user", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping(value = "status")
     @ResponseStatus(HttpStatus.OK)
     @Transactional

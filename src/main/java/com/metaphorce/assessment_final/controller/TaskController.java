@@ -5,6 +5,7 @@ import com.metaphorce.assessment_final.dto.TaskRequest;
 import com.metaphorce.assessment_final.dto.TaskResponse;
 import com.metaphorce.assessment_final.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @Operation(summary = "create a new task")
+    @Operation(summary = "create a new task", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
@@ -36,7 +37,7 @@ public class TaskController {
         return ResponseEntity.created(location).body(task);
     }
 
-    @Operation(summary = "Get task specific")
+    @Operation(summary = "Get task specific", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TaskResponse> getTask(@PathVariable Long id) {
@@ -44,7 +45,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTask(id));
     }
 
-    @Operation(summary = "Get all task")
+    @Operation(summary = "Get all task", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "all/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TaskResponse>> getTasks(@PathVariable Long id) {
@@ -52,7 +53,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasks(id));
     }
 
-    @Operation(summary = "changed task status (PENDING, IN_PROGRESS, COMPLETE)")
+    @Operation(summary = "changed task status (PENDING, IN_PROGRESS, COMPLETE)", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -60,7 +61,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.changeStatus(request));
     }
 
-    @Operation(summary = "Delete task by id")
+    @Operation(summary = "Delete task by id", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @Transactional

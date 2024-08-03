@@ -6,11 +6,11 @@ import com.metaphorce.assessment_final.dto.ProjectResponse;
 import com.metaphorce.assessment_final.dto.ReportResponse;
 import com.metaphorce.assessment_final.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,7 +25,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @Operation(summary = "create new project colaboratory")
+    @Operation(summary = "create new project colaboratory", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
@@ -38,7 +38,7 @@ public class ProjectController {
         return ResponseEntity.created(location).body(project);
     }
 
-    @Operation(summary = "Get a project")
+    @Operation(summary = "Get a project", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ProjectResponse> getProject(@PathVariable Long id) {
@@ -46,7 +46,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProject(id));
     }
 
-    @Operation(summary = "Get all project")
+    @Operation(summary = "Get all project", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "all/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ProjectResponse>> getAllProjects(@PathVariable Long id) {
@@ -54,7 +54,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjects(id));
     }
 
-    @Operation(summary = "Change status project (PENDING, IN_PROGRESS, COMPETE")
+    @Operation(summary = "Change status project (PENDING, IN_PROGRESS, COMPETE", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -63,7 +63,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.changeStatus(request));
     }
 
-    @Operation(summary = "delete project by id")
+    @Operation(summary = "delete project by id", security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @Transactional
@@ -73,7 +73,7 @@ public class ProjectController {
         return ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "Get report project progress")
+    @Operation(summary = "Get report project progress", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "report/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ReportResponse> getReport(@PathVariable Long id) {
