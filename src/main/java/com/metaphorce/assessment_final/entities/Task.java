@@ -44,4 +44,9 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Priority priority;
+
+    @Column(name = "create_date")
+    private LocalDate createDate;
+
+    private int runtime;
 }
