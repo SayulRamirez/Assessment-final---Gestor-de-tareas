@@ -19,6 +19,7 @@ otras que se especificarán más adelante.
 - SpringDoc - OpenAPI (para la documentación con Swagger)
 - JUnit
 - Mockito
+- JaCoCo 0.8.12
 - Postman
 
 ---
@@ -581,3 +582,41 @@ Método http: DELETE
 *Respuestas*
 
 404 sin contenido.
+
+---
+
+## Tests
+
+En esta aplicación se realizarón pruebas unitarias para garantizar la calidad
+de la aplicación. Estas pruebas se realizarón en los servicios de ProjectServiceImpl, 
+TaskServiceImpl y UserServiceImpl, cubriendo varios casos de prueba esenciales. 
+
+Las herramientas utilizadas fuerón:
+- JUnit para la ejecución de pruebas unitarias.
+- Mockito para la creación de mocks y simulaciones.
+- JaCoCo para la generación de reportes de los tests
+
+###### Ejemplo de pruebas
+````
+@Test
+    void whenGetProjectIsSuccessful() {
+
+        Project project = Project.builder().id(1L)
+                .title("first title")
+                .description("first description")
+                .status(Status.IN_PROGRESS)
+                .estimatedCompletion(LocalDate.now().plusDays(3)).build();
+
+        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+
+        ProjectResponse result = underTest.getProject(1L);
+
+        assertEquals(project.getId(), result.id());
+        assertEquals(project.getTitle(), result.title());
+    }
+````
+
+Para poder acceder al reporte:
+1. Se deben de ejecutar los tests, en la consla se deberá ejecutar el comando: **mvn clean test**
+2. Después ejecutar el siguiente comando: mvn jacoco:report
+3. Al ejecutar el comando anterior se generara el reporte en la ruta: target/site/jacoco/index.html el cual prodrás abrir con el navegador y visualizar la cobertura.
