@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponse createTask(TaskRequest request) {
 
-        User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new EntityNotFoundException("User not found whit email " + request.email()));
+        User user = userRepository.findByEmailAndIsActive(request.email()).orElseThrow(() -> new EntityNotFoundException("User not found or blocked or delete"));
 
         Project project = projectRepository.findById(request.project()).orElseThrow(() -> new EntityNotFoundException("Project not found whit id " + request.project()));
 

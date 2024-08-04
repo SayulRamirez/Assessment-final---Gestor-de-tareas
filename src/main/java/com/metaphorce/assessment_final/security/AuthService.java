@@ -6,6 +6,7 @@ import com.metaphorce.assessment_final.dto.RegisterRequest;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Role;
 import com.metaphorce.assessment_final.enums.UserStatus;
+import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
 import com.metaphorce.assessment_final.repositories.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +33,8 @@ public class AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
         User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (!user.getStatus().getStatus()) throw new EntityNotActiveException("The user is blocked or delete");
 
         String token = jwtService.getToken(user);
         return new AuthResponse(token);

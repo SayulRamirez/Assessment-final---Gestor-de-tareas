@@ -47,7 +47,7 @@ public class TaskServiceImplTest {
 
         TaskRequest request = new TaskRequest(null, null, "example@example.com", 1L, null, null);
 
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByEmailAndIsActive(anyString())).thenReturn(Optional.empty());
 
         assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> underTest.createTask(request));
     }
@@ -59,7 +59,7 @@ public class TaskServiceImplTest {
 
         User user = User.builder().build();
 
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmailAndIsActive(anyString())).thenReturn(Optional.of(user));
 
         when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -94,7 +94,7 @@ public class TaskServiceImplTest {
                 .priority(request.priority())
                 .project(project).build();
 
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmailAndIsActive(anyString())).thenReturn(Optional.of(user));
 
         when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
 
