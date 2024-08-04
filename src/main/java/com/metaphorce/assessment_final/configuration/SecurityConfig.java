@@ -5,6 +5,7 @@ import com.metaphorce.assessment_final.security.JWTAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,6 +35,7 @@ public class SecurityConfig {
                     auth.requestMatchers("auth/login").permitAll();
                     auth.requestMatchers("auth/register").permitAll();
 
+                    auth.requestMatchers(HttpMethod.PUT, "api/v1/user/status").hasAuthority(Role.ADMIN.name());
                     auth.anyRequest().hasAuthority(Role.USER.name());
                 })
                 .sessionManagement(sessionManager ->
