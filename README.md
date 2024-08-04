@@ -106,6 +106,50 @@ Se deberá de enviar en el body de la petición la información siguiente inform
 
 ### Usuarios
 
+La aplicación cuenta con un usuario predeterminado con un rol de ADMIN que puede acceder al endpoint que
+modifica el status del usuario como se muestra en el punto *Actualizar el status de algún usuario.
+Las credenciales del usuario son:
+email: "admin@admin.com"
+password: "admin1234"
+
+###### Actualizar el status de algún usuario.
+
+Ruta: **http://localhost:8080/api/v1/user/status**
+Metodo http: PUT.
+
+Se deberá enviar en el body de la petición lo siguiente:
+
+````
+{ 
+  "id": 1,
+  "status": "BLOCKED"
+}
+````
+
+*Respuesta*
+
+200 si fue exitosa la solicitud:
+````
+{
+  "id": 21,
+  "first_name": "Juan",
+  "last_name": "Ramírez",
+  "maternal_surname": "Mata",
+  "phone_number": "2344221243",
+  "status": "BLOCKED",
+  "email": "juan@example.com"
+}
+````
+
+404 si no se encontro al usuario:
+````
+{
+  "message": "User not found",
+  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
+  "status": "NOT_FOUND"
+}
+````
+
 ###### Obetener información de un usuario en específico, se deberá enviar en la ruta el id del usuario que se requiera solicitar su información.
 
 Ruta: **http://localhost:8080/api/v1/user/id**
@@ -155,44 +199,6 @@ Se deberá enviar en el body de la petición lo siguiente:
 }
 ````
 *Respuestas*
-
-200 si fue exitosa la solicitud:
-````
-{
-  "id": 21,
-  "first_name": "Juan",
-  "last_name": "Ramírez",
-  "maternal_surname": "Mata",
-  "phone_number": "2344221243",
-  "status": "ACTIVE",
-  "email": "juan@example.com"
-}
-````
-
-404 si no se encontro al usuario:
-````
-{
-  "message": "User not found",
-  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
-  "status": "NOT_FOUND"
-}
-````
-
-###### Actualizar el status de algún usuario.
-
-Ruta: **http://localhost:8080/api/v1/user/status**
-Metodo http: PUT.
-
-Se deberá enviar en el body de la petición lo siguiente:
-
-````
-{ 
-  "id": 1,
-  "status": "BLOCKED"
-}
-````
-
-*Respuesta*
 
 200 si fue exitosa la solicitud:
 ````
