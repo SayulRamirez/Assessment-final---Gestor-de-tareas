@@ -71,4 +71,12 @@ public class TaskController {
 
         return ResponseEntity.notFound().build();
     }
+
+    @Operation(summary = "Get all tasks from project by user", security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping(value = "user/{idUser}/project/{idProject}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<TaskResponse>> getTasks(@PathVariable Long idUser, @PathVariable Long idProject) {
+
+        return ResponseEntity.ok(taskService.listUserTasksInProject(idUser, idProject));
+    }
 }
