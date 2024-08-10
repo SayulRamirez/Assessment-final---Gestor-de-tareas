@@ -537,7 +537,7 @@ Método http: GET
 ]
 ````
 
-404 si no se encontraron proyectos,
+404 si no se encontraron tareas,
 
 ````
 {
@@ -568,7 +568,7 @@ Método http: PUT
 }
 ````
 
-404 si no se encontraron proyectos,
+404 si no se encontraron tareas,
 
 ````
 {
@@ -592,6 +592,41 @@ Método http: DELETE
 404 sin contenido.
 
 ---
+###### Obtener todas las tareas relacionadas a un usuario en un proyecto
+
+Ruta: http://localhost:8080/api/v1/tasks/user/idUser/project/idProject
+Método http: GET
+
+> [!NOTE]
+> No olvides remplazar el "idUser" de la ruta por el id del usuario
+> y el "idProject" por el id del proyecto
+> a eliminar: http://localhost:8080/api/v1/tasks/user/2/project/3
+
+*Respuestas*
+````
+[
+  {
+    "id": 12,
+    "title": "any title",
+    "description": "any description",
+    "status": "COMPLETE",
+    "estimate_delivery": "2024-01-11",
+    "priority": "HIGH",
+    "create_date": "2024-01-02",
+    "runtime": 3
+  }
+]
+````
+
+404 si no se encontraron tareas,
+
+````
+{
+  "message": "User not found",
+  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
+  "status": "NO_CONTENT"
+}
+````
 
 ## Tests
 
