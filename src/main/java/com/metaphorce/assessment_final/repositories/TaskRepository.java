@@ -21,4 +21,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("select distinct t.responsible from Task t where t.project.id =:id")
     List<User> findResponsibleByProjectId(Long id);
+
+    List<Task> findAllByResponsibleIdAndProjectId(Long idUser, Long idProject);
 }
