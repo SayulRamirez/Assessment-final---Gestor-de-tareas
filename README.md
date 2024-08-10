@@ -1,6 +1,6 @@
 # Assessment final del Career Booster de Metaphorce - Gestor de tareas.
 
-Este es el assessment final de la carrera en la que se se implementará un gestor de tareas
+Este es el assessment final del career booster en la que se se implementará un gestor de tareas
 para uno o más usuarios (equipos) utilizando tecnologías como java, spring boot, mysql entre
 otras que se especificarán más adelante.
 
@@ -72,7 +72,7 @@ Se deberá de enviar en el body de la petición la información siguiente inform
 Ruta: **http://localhost:8080/auth/login**
 Método http: POST.
 
-Se deberá de enviar en el body de la petición la información siguiente información como se muestra en el ejemplo.
+Se deberá de enviar en el body de la petición la información como se muestra en el ejemplo.
 
 ````
 {
@@ -523,16 +523,18 @@ Método http: GET
 200 si fue exitosa la solicitud:
 
 ````
-{
-  "id": 12,
-  "title": "any title",
-  "description": "any description",
-  "status": "COMPLETE",
-  "estimate_delivery": "2024-01-11",
-  "priority": "HIGH",
-  "create_date": "2024-01-02",
-  "runtime": 3
-}
+[
+ {
+   "id": 12,
+   "title": "any title",
+   "description": "any description",
+   "status": "COMPLETE",
+   "estimate_delivery": "2024-01-11",
+   "priority": "HIGH",
+   "create_date": "2024-01-02",
+   "runtime": 3
+ }
+]
 ````
 
 404 si no se encontraron proyectos,
