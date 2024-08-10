@@ -242,4 +242,47 @@ public class TaskServiceImplTest {
 
         verify(taskRepository, times(1)).deleteById(anyLong());
     }
+
+    //listUserTasksInProject()
+    @Test
+    void whenListUserTasksInProjectIsEmpty() {
+        when(taskRepository.findAllByResponsibleIdAndProjectId(anyLong(), anyLong())).thenReturn(new ArrayList<>());
+
+        assertThrows(EntityNotFoundException.class, () -> underTest.listUserTasksInProject(1L, 3L));
+    }
+
+    @Test
+    void whenListUserTasksInProjectIsSuccessful() {
+
+        Project project = Project.builder()
+                .id(2L)
+                .title("any title")
+                .description("any description")
+                .status(Status.PENDING)
+                .estimatedCompletion(LocalDate.now().plusDays(3)).build();
+
+        Task task = Task.builder()
+                .id(1L)
+                .title("any title")
+                .description("any description")
+                .responsible(User.builder().id(1L).build())
+                .estimatedDelivery(LocalDate.now())
+                .priority(Priority.MEDIUM)
+                .project(project).build();
+
+        Task task2 = Task.builder()
+                .id(1L)
+                .title("any title")
+                .description("any description")
+                .responsible(User.builder().id(1L).build())
+                .estimatedDelivery(LocalDate.now())
+                .priority(Priority.MEDIUM)
+                .project(project).build();
+
+        when(taskRepository.findAllByResponsibleIdAndProjectId(anyLong(), anyLong())).thenReturn(List.of(task, task2));
+
+        List<TaskResponse> result = underTest.listUserTasksInProject(task.getResponsible().getId(), project.getId());
+
+        assertEquals(2, result.size());
+    }
 }
