@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record Report(
 
+        @Schema(example = "23")
+        Long id,
+
         @Schema(example = "Juan")
         String first_name,
 

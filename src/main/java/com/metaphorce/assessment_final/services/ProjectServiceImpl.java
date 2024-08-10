@@ -118,7 +118,8 @@ public class ProjectServiceImpl implements ProjectService {
                     }
                 }
 
-                reports.add(new Report(user.getFirstName(),
+                reports.add(new Report(user.getId(),
+                        user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),
                         user.getPhoneNumber(), total, pending, inProgress, completed));
