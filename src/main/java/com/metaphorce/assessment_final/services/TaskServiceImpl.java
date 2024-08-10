@@ -113,4 +113,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void delete(Long id) {taskRepository.deleteById(id);}
+
+    @Override
+    public List<TaskResponse> listUserTasksInProject(Long idUser, Long idProject) {
+
+        List<Task> tasks = taskRepository.findAllByResponsibleIdAndProjectId(idUser, idProject);
+
+        if (tasks.isEmpty()) throw new EntityNotFoundException("Task not found to user: " + idUser);
+
+        return tasks.stream().map(task -> new TaskResponse(task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus(),
+                task.getEstimatedDelivery(),
+                task.getPriority(),
+                task.getCreateDate(),
+                task.getRuntime())).toList();
+    }
 }

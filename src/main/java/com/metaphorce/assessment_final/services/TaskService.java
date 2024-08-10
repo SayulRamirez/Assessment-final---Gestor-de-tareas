@@ -17,4 +17,6 @@ public interface TaskService {
     TaskResponse changeStatus(ChangeStatusRequest request);
 
     void delete(Long id);
+
+    List<TaskResponse> listUserTasksInProject(Long idUser, Long idProject);
 }
