@@ -234,6 +234,41 @@ public class TaskServiceImplTest {
 
     }
 
+    @Test
+    void whenChangeStatusToInProgressIsSuccessful() {
+
+        ChangeStatusRequest request = new ChangeStatusRequest(1L, Status.IN_PROGRESS);
+
+        Project project = Project.builder()
+                .id(2L)
+                .title("any title")
+                .description("any description")
+                .status(Status.PENDING)
+                .estimatedCompletion(LocalDate.now()).build();
+
+        Task task = Task.builder()
+                .id(1L)
+                .title("any title")
+                .description("any description")
+                .responsible(User.builder().id(1L).build())
+                .estimatedDelivery(LocalDate.now())
+                .priority(Priority.MEDIUM)
+                .project(project)
+                .createDate(LocalDate.now())
+                .runtime(0).build();
+
+        when(taskRepository.findById(request.id())).thenReturn(Optional.of(task));
+
+        task.setStatus(request.status());
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        TaskResponse result = underTest.changeStatus(request);
+
+        verify(taskRepository, times(1)).save(any(Task.class));
+        assertEquals(request.status(), result.status());
+        assertEquals(0, result.runtime());
+    }
+
     //delete()
     @Test
     void whenDeleteTask() {
