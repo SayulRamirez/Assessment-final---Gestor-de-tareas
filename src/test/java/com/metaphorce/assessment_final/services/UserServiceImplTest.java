@@ -7,6 +7,8 @@ import com.metaphorce.assessment_final.repositories.UserRepository;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.UserStatus;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,27 +38,6 @@ public class UserServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> underTest.getInfo(1L));
     }
 
-    @Test
-    void whenGetInfoIsSuccessful() {
-
-        User user = User.builder()
-                .id(1L)
-                .firstName("juan")
-                .lastName("ramirez")
-                .maternalSurname("vazquez")
-                .phoneNumber("48822412432")
-                .status(UserStatus.ACTIVE)
-                .email("juan@example.com")
-                .build();
-
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-
-        UserResponse response = underTest.getInfo(1L);
-
-        assertEquals(user.getId(), response.id());
-        assertEquals(user.getEmail(), response.email());
-    }
-
     //updateInfo()
     @Test
     void whenUpdateInfoUserIsNotFound() {
@@ -74,37 +55,6 @@ public class UserServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> underTest.updateInfo(request));
     }
 
-    @Test
-    void whenUpdateInfoIsSuccessful() {
-
-        User user = User.builder()
-                .id(1L)
-                .firstName("juan")
-                .lastName("ramirez")
-                .maternalSurname("vazquez")
-                .phoneNumber("48822412432")
-                .status(UserStatus.ACTIVE)
-                .email("juan@example.com")
-                .build();
-
-        UpdateInfoRequest request = new UpdateInfoRequest(
-                1L,
-                "juan",
-                "perez",
-                "peña",
-                "3212347327"
-        );
-
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-
-        UserResponse result = underTest.updateInfo(request);
-
-        assertEquals(request.id(), result.id());
-        assertEquals(request.last_name(), result.last_name());
-        assertEquals(request.maternal_surname(), result.maternal_surname());
-        assertEquals(request.phone_number(), result.phone_number());
-    }
-
     //changedStatus()
     @Test
     void whenChangeStatusUserNotFound() {
@@ -116,25 +66,82 @@ public class UserServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> underTest.changeStatus(request));
     }
 
-    @Test
-    void whenChangeStatusIsSuccessful() {
+    @Nested
+    class UserIsRequiredTest {
 
-        User user = User.builder()
-                .id(1L)
-                .firstName("juan")
-                .lastName("ramirez")
-                .maternalSurname("vazquez")
-                .phoneNumber("48822412432")
-                .status(UserStatus.ACTIVE)
-                .email("juan@example.com")
-                .build();
+        private User user;
 
-        StatusUserRequest request = new StatusUserRequest(1L, UserStatus.BLOCKED);
+        @BeforeEach
+        void setUp() {
+            user = User.builder().id(1L).firstName("juan")
+                    .lastName("ramirez")
+                    .maternalSurname("vazquez")
+                    .phoneNumber("48822412432")
+                    .status(UserStatus.ACTIVE)
+                    .email("juan@example.com").build();
+        }
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        //getInfo()
+        @Test
+        void whenGetInfoIsSuccessful() {
+            when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
-        UserResponse result = underTest.changeStatus(request);
+            UserResponse response = underTest.getInfo(1L);
 
-        assertEquals(request.status(), result.status());
+            assertEquals(user.getId(), response.id());
+            assertEquals(user.getEmail(), response.email());
+        }
+
+        //updateInfo()
+        @Test
+        void whenUpdateInfoMaternalNameIsBlankAndIsSuccessful() {
+
+            UpdateInfoRequest request = new UpdateInfoRequest(1L,
+                    "juan",
+                    "perez",
+                    "",
+                    "3212347327"
+            );
+
+            when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+            UserResponse result = underTest.updateInfo(request);
+
+            assertEquals(request.id(), result.id());
+            assertEquals(request.last_name(), result.last_name());
+            assertEquals(user.getMaternalSurname(), result.maternal_surname());
+            assertEquals(request.phone_number(), result.phone_number());
+        }
+
+        @Test
+        void whenUpdateInfoIsSuccessful() {
+
+            UpdateInfoRequest request = new UpdateInfoRequest(1L,
+                    "juan",
+                    "perez",
+                    "peña",
+                    "3212347327"
+            );
+
+            when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+            UserResponse result = underTest.updateInfo(request);
+
+            assertEquals(request.id(), result.id());
+            assertEquals(request.last_name(), result.last_name());
+            assertEquals(request.maternal_surname(), result.maternal_surname());
+            assertEquals(request.phone_number(), result.phone_number());
+        }
+
+        @Test //ChangeStatus()
+        void whenChangeStatusIsSuccessful() {
+            StatusUserRequest request = new StatusUserRequest(1L, UserStatus.BLOCKED);
+
+            when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+            UserResponse result = underTest.changeStatus(request);
+
+            assertEquals(request.status(), result.status());
+        }
     }
 }
