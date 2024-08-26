@@ -22,6 +22,7 @@ public record UpdateInfoRequest(
         String last_name,
 
         @Schema(example = "Apellido materno (opcional)")
+        @NotNull(message = "The field not must be null")
         String maternal_surname,
 
         @Schema(example = "47712345432")
