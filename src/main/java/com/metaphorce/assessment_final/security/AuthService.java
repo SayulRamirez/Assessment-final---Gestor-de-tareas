@@ -46,18 +46,15 @@ public class AuthService {
 
         if (userRepository.existsByPhoneNumber(request.phone_number())) throw new EntityExistsException("Already exists user whit phone number: " + request.phone_number());
 
-        User user = User.builder()
+        User user = userRepository.save(User.builder()
                 .firstName(request.first_name())
                 .lastName(request.last_name())
+                .maternalSurname(request.maternal_surname())
                 .phoneNumber(request.phone_number())
                 .password(passwordEncoder.encode(request.password()))
                 .email(request.email())
                 .status(UserStatus.ACTIVE)
-                .role(Role.USER).build();
-
-        if (!request.maternal_surname().isBlank()) user.setMaternalSurname(request.maternal_surname());
-
-        userRepository.save(user);
+                .role(Role.USER).build());
 
         return new AuthResponse(jwtService.getToken(user));
     }
