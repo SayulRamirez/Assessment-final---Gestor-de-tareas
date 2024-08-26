@@ -296,6 +296,18 @@ public class ProjectServiceImplTest {
             }
         };
 
+        TaskStatusCount count1 = new TaskStatusCount() {
+            @Override
+            public Status getStatus() {
+                return Status.IN_PROGRESS;
+            }
+
+            @Override
+            public int getCount() {
+                return 2;
+            }
+        };
+
         TaskStatusCount count2 = new TaskStatusCount() {
             @Override
             public Status getStatus() {
@@ -312,7 +324,7 @@ public class ProjectServiceImplTest {
 
         when(taskRepository.findResponsibleByProjectId(anyLong())).thenReturn(List.of(user));
 
-        when(taskRepository.countTaskByStatus(user.getId())).thenReturn(List.of(count, count2));
+        when(taskRepository.countTaskByStatus(user.getId())).thenReturn(List.of(count, count1, count2));
 
         ReportResponse result = underTest.getReport(1L);
 
@@ -321,9 +333,9 @@ public class ProjectServiceImplTest {
         assertFalse(result.report().isEmpty());
 
         result.report().forEach(report -> {
-            assertEquals(6, report.assigned());
+            assertEquals(8, report.assigned());
             assertEquals(2, report.pending());
-            assertEquals(0, report.in_progress());
+            assertEquals(2, report.in_progress());
             assertEquals(4, report.complete());
         });
     }
