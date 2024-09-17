@@ -48,7 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = projectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Project not found whit id: " + id));
 
-        return new ProjectResponse(project.getId(), project.getTitle(), project.getTitle(), project.getStatus(), project.getEstimatedCompletion());
+        return new ProjectResponse(project.getId(), project.getTitle(), project.getDescription(), project.getStatus(), project.getEstimatedCompletion());
     }
 
     @Override
@@ -71,9 +71,11 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = projectRepository.findById(request.id()).orElseThrow(() -> new EntityNotFoundException("Project not found whit id: " + request.id()));
 
+        project.setStatus(request.status());
+
         projectRepository.save(project);
 
-        return new ProjectResponse(project.getId(), project.getTitle(), project.getTitle(), project.getStatus(), project.getEstimatedCompletion());
+        return new ProjectResponse(project.getId(), project.getTitle(), project.getDescription(), project.getStatus(), project.getEstimatedCompletion());
     }
 
     @Override
@@ -85,11 +87,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ReportResponse getReport(Long id) {
+    public List<Report> getReport(Long id) {
 
-        Project project = projectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Project not found whit id: " + id));
+        if (!projectRepository.existsById(id)) throw  new EntityNotFoundException("Project not found whit id: " + id);
 
-        List<User> responsible = taskRepository.findResponsibleByProjectId(project.getId());
+        List<User> responsible = taskRepository.findResponsibleByProjectId(id);
 
         List<Report> reports = new ArrayList<>();
 
@@ -126,10 +128,6 @@ public class ProjectServiceImpl implements ProjectService {
             });
         }
 
-        return new ReportResponse(new ProjectResponse(project.getId(),
-                project.getTitle(),
-                project.getDescription(),
-                project.getStatus(),
-                project.getEstimatedCompletion()), reports);
+        return reports;
     }
 }
