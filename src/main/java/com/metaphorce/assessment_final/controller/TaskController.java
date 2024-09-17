@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class TaskController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public ResponseEntity<TaskResponse> create(TaskRequest request) {
+    public ResponseEntity<TaskResponse> create(@RequestBody @Valid TaskRequest request) {
 
         TaskResponse task = taskService.createTask(request);
 
