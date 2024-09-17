@@ -209,39 +209,25 @@ public class ProjectServiceImplTest {
     @Test
     void whenGetReportProjectNotFound() {
 
-        when(projectRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(projectRepository.existsById(anyLong())).thenReturn(false);
 
         assertThrows(EntityNotFoundException.class, () -> underTest.getReport(1L));
     }
 
     @Test
     void whenGetReportNoResponsible() {
-        Project project = Project.builder()
-                .id(1L)
-                .title("second title")
-                .description("second description")
-                .status(Status.PENDING)
-                .estimatedCompletion(LocalDate.now().plusDays(6)).build();
 
-        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+        when(projectRepository.existsById(anyLong())).thenReturn(true);
 
         when(taskRepository.findResponsibleByProjectId(anyLong())).thenReturn(new ArrayList<>());
 
-        ReportResponse result = underTest.getReport(1L);
+        List<Report> result = underTest.getReport(1L);
 
-        assertEquals(project.getTitle(), result.project().title());
-        assertEquals(project.getStatus(), result.project().status());
-        assertTrue(result.report().isEmpty());
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void whenGetProjectNoTasksAssigned() {
-        Project project = Project.builder()
-                .id(1L)
-                .title("second title")
-                .description("second description")
-                .status(Status.PENDING)
-                .estimatedCompletion(LocalDate.now().plusDays(6)).build();
 
         User user = User.builder().id(1L)
                 .firstName("juan")
@@ -249,19 +235,17 @@ public class ProjectServiceImplTest {
                 .email("juan@example.com")
                 .phoneNumber("1232121432").build();
 
-        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+        when(projectRepository.existsById(anyLong())).thenReturn(true);
 
         when(taskRepository.findResponsibleByProjectId(anyLong())).thenReturn(List.of(user));
 
         when(taskRepository.countTaskByStatus(user.getId())).thenReturn(new ArrayList<>());
 
-        ReportResponse result = underTest.getReport(1L);
+        List<Report> result = underTest.getReport(1L);
 
-        assertEquals(project.getTitle(), result.project().title());
-        assertEquals(project.getStatus(), result.project().status());
-        assertFalse(result.report().isEmpty());
+        assertFalse(result.isEmpty());
 
-        result.report().forEach(report -> {
+        result.forEach(report -> {
             assertEquals(0, report.assigned());
             assertEquals(0, report.pending());
             assertEquals(0, report.in_progress());
@@ -271,13 +255,6 @@ public class ProjectServiceImplTest {
 
     @Test
     void whenGetProjectTasksAssigned() {
-        Project project = Project.builder()
-                .id(1L)
-                .title("second title")
-                .description("second description")
-                .status(Status.PENDING)
-                .estimatedCompletion(LocalDate.now().plusDays(6)).build();
-
         User user = User.builder().id(1L)
                 .firstName("juan")
                 .lastName("martinez")
@@ -320,19 +297,17 @@ public class ProjectServiceImplTest {
             }
         };
 
-        when(projectRepository.findById(anyLong())).thenReturn(Optional.of(project));
+        when(projectRepository.existsById(anyLong())).thenReturn(true);
 
         when(taskRepository.findResponsibleByProjectId(anyLong())).thenReturn(List.of(user));
 
         when(taskRepository.countTaskByStatus(user.getId())).thenReturn(List.of(count, count1, count2));
 
-        ReportResponse result = underTest.getReport(1L);
+        List<Report> result = underTest.getReport(1L);
 
-        assertEquals(project.getTitle(), result.project().title());
-        assertEquals(project.getStatus(), result.project().status());
-        assertFalse(result.report().isEmpty());
+        assertFalse(result.isEmpty());
 
-        result.report().forEach(report -> {
+        result.forEach(report -> {
             assertEquals(8, report.assigned());
             assertEquals(2, report.pending());
             assertEquals(2, report.in_progress());
