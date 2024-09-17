@@ -75,7 +75,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<Task> tasks = taskRepository.findAllByResponsibleId(id);
 
-        if (tasks.isEmpty()) throw new EntityNotFoundException("No projects were found with the id leader: " + id);
+        if (tasks.isEmpty()) throw new EntityNotFoundException("No tasks were found with the id: " + id);
 
         return tasks.stream().map(task -> new TaskResponse(task.getId(),
                 task.getTitle(),
