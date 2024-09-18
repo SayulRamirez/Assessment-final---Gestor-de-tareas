@@ -42,9 +42,9 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
 
-        if (userRepository.existsByEmail(request.email())) throw new EntityExistsException("Already exists user whit email: " + request.email());
+        if (userRepository.existsByEmail(request.email())) throw new EntityExistsException("Email exists: " + request.email());
 
-        if (userRepository.existsByPhoneNumber(request.phone_number())) throw new EntityExistsException("Already exists user whit phone number: " + request.phone_number());
+        if (userRepository.existsByPhoneNumber(request.phone_number())) throw new EntityExistsException("Phone exists: " + request.phone_number());
 
         User user = userRepository.save(User.builder()
                 .firstName(request.first_name())

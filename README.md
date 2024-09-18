@@ -520,7 +520,9 @@ Método http: GET
 
 *Respuestas*
 
-200 si fue exitosa la solicitud:
+Devuelve todas las tareas del usuario ordenadas por la prioridad o
+si no encuentra tareas relacionadas devuelve una lista vacía, en cualquiera de los casos 
+devuelve un código 200.
 
 ````
 [
@@ -537,17 +539,14 @@ Método http: GET
 ]
 ````
 
-404 si no se encontraron tareas,
-
 ````
-{
-  "message": "User not found",
-  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
-  "status": "NO_CONTENT"
-}
+[]
 ````
 
 ###### Cambiar el status de la tarea
+Cambia el estatus de la tarea además, si la actulización del estatus es a COMPLETE 
+se agrega la marca del tiempo de ejecución en horas en el atributo runtime.
+
 Ruta: http://localhost:8080/api/v1/tasks
 Método http: PUT
 
@@ -592,7 +591,10 @@ Método http: DELETE
 404 sin contenido.
 
 ---
-###### Obtener todas las tareas relacionadas a un usuario en un proyecto
+###### Obtener todas las tareas de un usuario relacionadas a un proyecto
+
+Obten todas las tareas de un usuario relacionadas a un proyecto ordenadas por fecha de entrega,
+en el siguiente orden: Fecha de entrega más proxima, fecha de entrega menos proxima.
 
 Ruta: http://localhost:8080/api/v1/tasks/user/idUser/project/idProject
 Método http: GET

@@ -1,9 +1,6 @@
 package com.metaphorce.assessment_final.controller;
 
-import com.metaphorce.assessment_final.dto.ChangeStatusRequest;
-import com.metaphorce.assessment_final.dto.ProjectRequest;
-import com.metaphorce.assessment_final.dto.ProjectResponse;
-import com.metaphorce.assessment_final.dto.ReportResponse;
+import com.metaphorce.assessment_final.dto.*;
 import com.metaphorce.assessment_final.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
@@ -54,7 +52,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjects(id));
     }
 
-    @Operation(summary = "Change status project (PENDING, IN_PROGRESS, COMPETE", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Change status project (PENDING, IN_PROGRESS, COMPLETE", security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -76,7 +74,7 @@ public class ProjectController {
     @Operation(summary = "Get report project progress", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "report/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ReportResponse> getReport(@PathVariable Long id) {
+    public ResponseEntity<List<Report>> getReport(@PathVariable Long id) {
 
         return ResponseEntity.ok(projectService.getReport(id));
     }

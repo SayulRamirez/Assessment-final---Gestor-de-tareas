@@ -149,7 +149,9 @@ public class TaskServiceImplTest {
     void whenGetTasksIsEmpty() {
         when(taskRepository.findAllByResponsibleId(anyLong())).thenReturn(new ArrayList<>());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.getTasks(1L));
+        List<TaskResponse> tasks = underTest.getTasks(1L);
+
+        assertTrue(tasks.isEmpty());
     }
 
     @Test
@@ -180,7 +182,7 @@ public class TaskServiceImplTest {
                 .priority(Priority.MEDIUM)
                 .project(project).build();
 
-        when(taskRepository.findAllByResponsibleId(task.getId())).thenReturn(List.of(task, task2));
+        when(taskRepository.findAllByResponsibleId(anyLong())).thenReturn(List.of(task, task2));
 
         List<TaskResponse> result = underTest.getTasks(task.getId());
 
@@ -281,9 +283,10 @@ public class TaskServiceImplTest {
     //listUserTasksInProject()
     @Test
     void whenListUserTasksInProjectIsEmpty() {
-        when(taskRepository.findAllByResponsibleIdAndProjectId(anyLong(), anyLong())).thenReturn(new ArrayList<>());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.listUserTasksInProject(1L, 3L));
+        List<TaskResponse> response = underTest.listUserTasksInProject(1L, 2L);
+
+        assertTrue(response.isEmpty());
     }
 
     @Test
