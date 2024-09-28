@@ -4,17 +4,20 @@ import com.metaphorce.assessment_final.dto.*;
 import com.metaphorce.assessment_final.entities.Project;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.enums.Status;
-import com.metaphorce.assessment_final.enums.UserStatus;
 import com.metaphorce.assessment_final.exceptions.EntityNotActiveException;
 import com.metaphorce.assessment_final.repositories.ProjectRepository;
 import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +29,20 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final TaskRepository taskRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
+
     @Override
     public ProjectResponse createProject(ProjectRequest request) {
 
-        User user = userRepository.findById(request.leader()).orElseThrow(() -> new EntityNotFoundException("User not found whit id: " + request.leader()));
+        User user = userRepository.findById(request.leader()).orElseThrow(() -> {
+            LOGGER.error("User not found with id: {}", request.leader());
+            return new EntityNotFoundException("User not found whit id: " + request.leader());
+        });
 
-        if (user.getStatus() != UserStatus.ACTIVE) throw new EntityNotActiveException("The user is blocked or deleted");
+        if (!user.getStatus().getStatus()) {
+            LOGGER.error("User is not active");
+            throw new EntityNotActiveException("The user is blocked or deleted");
+        }
 
         Project project = projectRepository.save(Project.builder()
                 .title(request.title())
@@ -40,94 +51,87 @@ public class ProjectServiceImpl implements ProjectService {
                 .status(Status.PENDING)
                 .estimatedCompletion(request.estimate_completion()).build());
 
-        return new ProjectResponse(project.getId(), project.getTitle(), project.getDescription(),project.getStatus(), project.getEstimatedCompletion());
+        return getResponse(project);
     }
 
     @Override
     public ProjectResponse getProject(Long id) {
 
-        Project project = projectRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Project not found whit id: " + id));
+        Project project = findProject(id);
 
-        return new ProjectResponse(project.getId(), project.getTitle(), project.getDescription(), project.getStatus(), project.getEstimatedCompletion());
+        return getResponse(project);
     }
 
     @Override
     public List<ProjectResponse> getProjects(Long id) {
 
-        List<Project> projects = projectRepository.findAllByLeaderId(id);
-
-        if (projects.isEmpty()) throw new EntityNotFoundException("No projects were found with the id leader: " + id);
-
-        return projects.stream().map(project -> new ProjectResponse(
-                project.getId(),
-                project.getTitle(),
-                project.getDescription(),
-                project.getStatus(),
-                project.getEstimatedCompletion())).toList();
+        return projectRepository.findAllByLeaderId(id)
+                .stream()
+                .map(ProjectServiceImpl::getResponse)
+                .sorted(Comparator.comparing(ProjectResponse::status, Status::compareTo))
+                .toList();
     }
 
     @Override
     public ProjectResponse changeStatus(ChangeStatusRequest request) {
 
-        Project project = projectRepository.findById(request.id()).orElseThrow(() -> new EntityNotFoundException("Project not found whit id: " + request.id()));
+        Project project = findProject(request.id());
 
         project.setStatus(request.status());
 
-        projectRepository.save(project);
-
-        return new ProjectResponse(project.getId(), project.getTitle(), project.getDescription(), project.getStatus(), project.getEstimatedCompletion());
+        return getResponse(projectRepository.save(project));
     }
 
     @Override
     public void delete(Long id) {
-
-        taskRepository.deleteAllByProjectId(id);
-
         projectRepository.deleteById(id);
     }
 
     @Override
     public List<Report> getReport(Long id) {
 
-        if (!projectRepository.existsById(id)) throw  new EntityNotFoundException("Project not found whit id: " + id);
+        if (!projectRepository.existsById(id)) throw new EntityNotFoundException("Project not found whit id: " + id);
 
         List<User> responsible = taskRepository.findResponsibleByProjectId(id);
 
-        List<Report> reports = new ArrayList<>();
+        return responsible.stream().map(user -> {
+            List<TaskStatusCount> taskStatusCounts = taskRepository.countTaskByStatus(user.getId());
 
-        if (!responsible.isEmpty()) {
+            int pending = extractStatus(taskStatusCounts, TaskStatusCount::isPending);
 
-            responsible.forEach(user -> {
+            int inProgress = extractStatus(taskStatusCounts, TaskStatusCount::isInProgress);
 
-                List<TaskStatusCount> taskStatusCounts = taskRepository.countTaskByStatus(user.getId());
+            int completed = extractStatus(taskStatusCounts, TaskStatusCount::isCompleted);
 
-                int pending = 0;
-                int completed = 0;
-                int inProgress = 0;
-                int total = 0;
+            int total = taskStatusCounts.stream().mapToInt(TaskStatusCount::getCount).sum();
 
-                if (!taskStatusCounts.isEmpty()) {
+            return new Report(user.getId(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getPhoneNumber(), total, pending, inProgress, completed);
+        }).collect(Collectors.toList());
+    }
 
-                    for (TaskStatusCount count : taskStatusCounts) {
+    private int extractStatus(List<TaskStatusCount> tasksStatusCount, Predicate<TaskStatusCount> validation) {
+        return tasksStatusCount.stream()
+                .filter(validation)
+                .mapToInt(TaskStatusCount::getCount)
+                .sum();
+    }
 
-                        switch (count.getStatus()) {
-                            case PENDING -> pending = count.getCount();
-                            case IN_PROGRESS -> inProgress = count.getCount();
-                            case COMPLETE -> completed = count.getCount();
-                        }
+    private static ProjectResponse getResponse(Project project) {
+        return new ProjectResponse(project.getId(),
+                project.getTitle(),
+                project.getDescription(),
+                project.getStatus(),
+                project.getEstimatedCompletion());
+    }
 
-                        total += count.getCount();
-                    }
-                }
-
-                reports.add(new Report(user.getId(),
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getEmail(),
-                        user.getPhoneNumber(), total, pending, inProgress, completed));
-            });
-        }
-
-        return reports;
+    private Project findProject(Long id) {
+        return projectRepository.findById(id).orElseThrow(() -> {
+            LOGGER.error("Project not found with id: {}", id);
+            return new EntityNotFoundException("Project not found whit id: " + id);
+        });
     }
 }
