@@ -316,7 +316,10 @@ Método http: GET
 
 *Respuestas*
 
-200 si fue exitosa la solicitud:
+Devuelve los proyectos del usuario o una lista vacía si aun no tiene proyectos
+ordenados por el estatus del proyecto en el siguiente orden:
+PENDING, IN_PROGRESS, COMPLETE.
+En cualquier caso el estatus http es 200:
 
 ````
 {
@@ -325,16 +328,6 @@ Método http: GET
   "description": "any description",
   "status": "COMPLETE",
   "estimated_completion": "2025-12-03"
-}
-````
-
-404 si no se encontraron proyectos,
-
-````
-{
-  "message": "User not found",
-  "timestamp": "2024-07-26T23:48:13.0317694-06:00",
-  "status": "NO_CONTENT"
 }
 ````
 
