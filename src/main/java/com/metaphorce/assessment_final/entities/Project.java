@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -35,4 +37,7 @@ public class Project {
 
     @Column(name = "estimated_completion", nullable = false)
     private LocalDate estimatedCompletion;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "project", orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
 }
