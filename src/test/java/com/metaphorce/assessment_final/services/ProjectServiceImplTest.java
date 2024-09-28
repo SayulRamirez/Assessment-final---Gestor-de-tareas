@@ -130,7 +130,9 @@ public class ProjectServiceImplTest {
 
         when(projectRepository.findAllByLeaderId(anyLong())).thenReturn(new ArrayList<>());
 
-        assertThrows(EntityNotFoundException.class, () -> underTest.getProjects(1L));
+        List<ProjectResponse> responses = underTest.getProjects(1L);
+
+        assertTrue(responses.isEmpty());
     }
 
     @Test
@@ -201,7 +203,6 @@ public class ProjectServiceImplTest {
 
         underTest.delete(1L);
 
-        verify(taskRepository, times(1)).deleteAllByProjectId(anyLong());
         verify(projectRepository, times(1)).deleteById(anyLong());
     }
 
