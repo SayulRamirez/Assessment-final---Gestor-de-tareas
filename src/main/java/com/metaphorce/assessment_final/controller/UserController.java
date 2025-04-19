@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(value = "http://127.0.0.1:5500/")
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
