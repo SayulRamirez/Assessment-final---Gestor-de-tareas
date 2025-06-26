@@ -14,8 +14,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findAllByResponsibleId(Long id);
 
-    void deleteAllByProjectId(Long id);
-
     @Query("select t.status as status, count(t.status) as count from Task t where t.responsible.id =:id group by t.status")
     List<TaskStatusCount> countTaskByStatus(Long id);
 

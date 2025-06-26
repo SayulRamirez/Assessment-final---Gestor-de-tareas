@@ -9,7 +9,6 @@ import com.metaphorce.assessment_final.repositories.ProjectRepository;
 import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
     private final UserRepository userRepository;
@@ -30,6 +28,12 @@ public class ProjectServiceImpl implements ProjectService {
     private final TaskRepository taskRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectServiceImpl.class);
+
+    public ProjectServiceImpl(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository) {
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
+    }
 
     @Override
     public ProjectResponse createProject(ProjectRequest request) {

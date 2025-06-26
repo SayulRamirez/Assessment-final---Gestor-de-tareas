@@ -6,14 +6,16 @@ import com.metaphorce.assessment_final.dto.UserResponse;
 import com.metaphorce.assessment_final.entities.User;
 import com.metaphorce.assessment_final.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserResponse getInfo(Long id) {

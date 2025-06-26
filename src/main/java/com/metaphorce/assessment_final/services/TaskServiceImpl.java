@@ -11,7 +11,6 @@ import com.metaphorce.assessment_final.repositories.ProjectRepository;
 import com.metaphorce.assessment_final.repositories.TaskRepository;
 import com.metaphorce.assessment_final.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final UserRepository userRepository;
@@ -32,6 +30,12 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository  taskRepository;
 
     private final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
+
+    public TaskServiceImpl(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository) {
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
+    }
 
     @Override
     public TaskResponse createTask(TaskRequest request) {
